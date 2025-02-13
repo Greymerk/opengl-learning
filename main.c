@@ -42,23 +42,17 @@ int main( int argc, const char* argv[] ) {
 	GLuint vertexBuffer;
 	glGenBuffers(1, &vertexBuffer);
 	
-	float vertices[] = {
-		-0.5f,  0.5f, 1.0f, 0.0f, 0.0f, // Top-left
-		0.5f,  0.5f, 0.0f, 1.0f, 0.0f, // Top-right
-		0.5f, -0.5f, 0.0f, 0.0f, 1.0f, // Bottom-right
-
-		0.5f, -0.5f, 0.0f, 0.0f, 1.0f, // Bottom-right
-		-0.5f, -0.5f, 1.0f, 1.0f, 1.0f, // Bottom-left
-		-0.5f,  0.5f, 1.0f, 0.0f, 0.0f  // Top-left
-	};
-	
-	GLuint elements[] = {
-		0, 1, 2, 3, 4, 5
-	};
-	
 	// vertex buffer object
 	GLuint vbo;
 	glGenBuffers(1, &vbo); // Generate 1 buffer
+	
+	float vertices[] = {
+		-0.5f,  0.5f, 1.0f, 0.0f, 0.0f, // Top-left
+		 0.5f,  0.5f, 0.0f, 1.0f, 0.0f, // Top-right
+		 0.5f, -0.5f, 0.0f, 0.0f, 1.0f, // Bottom-right
+		-0.5f, -0.5f, 1.0f, 1.0f, 1.0f  // Bottom-left
+	};
+	
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 	
@@ -69,9 +63,15 @@ int main( int argc, const char* argv[] ) {
 	
 	GLuint ebo;
 	glGenBuffers(1, &ebo);
+	
+	GLuint elements[] = {
+		0, 1, 2,
+		2, 3, 0
+	};
+	
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(elements), elements, GL_STATIC_DRAW);
-	
+
 	// createShaderProgram defined in shader.h
 	GLuint shaderProgram = createShaderProgram("test.vsh", "test.fsh");
 	
@@ -82,12 +82,12 @@ int main( int argc, const char* argv[] ) {
 	glUseProgram(shaderProgram);
 	
 	GLint posAttrib = glGetAttribLocation(shaderProgram, "position");
-	glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 5*sizeof(float), 0);
+	glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), 0);
 	glEnableVertexAttribArray(posAttrib);
 	
 	GLint colAttrib = glGetAttribLocation(shaderProgram, "color");
 	glEnableVertexAttribArray(colAttrib);
-	glVertexAttribPointer(colAttrib, 3, GL_FLOAT, GL_FALSE, 5*sizeof(float), (void*)(2*sizeof(float)));
+	glVertexAttribPointer(colAttrib, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(2*sizeof(float)));
 		
 	outError();
 	
