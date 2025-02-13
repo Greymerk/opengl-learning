@@ -4,6 +4,10 @@
 #include <GL/glew.h>
 #include "shader.h"
 
+bool isCompiled(GLuint shader);
+GLuint compileShader(const char* src, GLenum type);
+char* readShaderSource(char* filename);
+
 GLuint createShaderProgram(char* vertFile, char* fragFile){
 	// define vertex and fragment shader source
 	const char* vertSource = readShaderSource(vertFile);

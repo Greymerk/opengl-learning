@@ -1,4 +1,4 @@
-BINS = "shader.c"
+BINS = shader.c timer.c
 
 all: main
 

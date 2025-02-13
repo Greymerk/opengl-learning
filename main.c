@@ -9,13 +9,11 @@
 #include <SDL3/SDL_video.h>
 
 #include <math.h>
-#include <sys/time.h>
 #include "shader.h"
 
 #define WIDTH 900
 #define HEIGHT 600
 
-double sinceEpoch();
 void outError();
 
 // https://open.gl/drawing
@@ -105,6 +103,7 @@ int main( int argc, const char* argv[] ) {
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 		SDL_GL_SwapWindow(window);
 		
+		
 	}
 	
 	// Cleanup
@@ -136,12 +135,3 @@ void outError(){
 	}
 }
 
-double sinceEpoch(){
-	struct timeval tv;
-	gettimeofday(&tv, NULL);
-	time_t seconds = tv.tv_sec;
-	useconds_t micros = tv.tv_usec;
-	
-	double time = seconds + micros / 1e6;
-	return time;
-}
