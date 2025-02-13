@@ -43,9 +43,9 @@ int main( int argc, const char* argv[] ) {
 	glGenBuffers(1, &vertexBuffer);
 	
 	float vertices[] = {
-		0.0f,  0.5f, // Vertex 1 (X, Y)
-		0.5f, -0.5f, // Vertex 2 (X, Y)
-		-0.5f, -0.5f  // Vertex 3 (X, Y)
+		0.0f,  0.5f, 1.0f, 0.0f, 0.0f, // Vertex 1 (X, Y) RED
+		0.5f, -0.5f, 0.0f, 1.0f, 0.0f, // Vertex 2 (X, Y) GREEN
+		-0.5f, -0.5f, 0.0f, 0.0f, 1.0f // Vertex 3 (X, Y) BLUE
 	};
 	
 	// vertex buffer object
@@ -69,15 +69,14 @@ int main( int argc, const char* argv[] ) {
 	glUseProgram(shaderProgram);
 	
 	GLint posAttrib = glGetAttribLocation(shaderProgram, "position");
-	glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 0, 0);
+	glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 5*sizeof(float), 0);
 	glEnableVertexAttribArray(posAttrib);
 	
-	// set triangle color to red
-	GLint uniColor = glGetUniformLocation(shaderProgram, "triangleColor");
+	GLint colAttrib = glGetAttribLocation(shaderProgram, "color");
+	glEnableVertexAttribArray(colAttrib);
+	glVertexAttribPointer(colAttrib, 3, GL_FLOAT, GL_FALSE, 5*sizeof(float), (void*)(2*sizeof(float)));
 		
 	outError();
-	
-	double start = sinceEpoch();
 	
 	bool running = true;
 	while(running){
@@ -88,11 +87,6 @@ int main( int argc, const char* argv[] ) {
 					running = false; break;
 			}
 		}
-		
-		double now = sinceEpoch();
-		double duration = (now - start);
-		
-		glUniform3f(uniColor, (sin(duration * 4.0f) + 1.0f) / 2.0f, 0.0f, 0.0f);
 		
 		// draw
 		glDrawArrays(GL_TRIANGLES, 0, 3);
