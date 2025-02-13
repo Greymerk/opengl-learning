@@ -8,11 +8,14 @@
 #include <SDL3/SDL_opengl.h>
 #include <SDL3/SDL_video.h>
 
+#include <math.h>
+#include <sys/time.h>
 #include "shader.h"
 
 #define WIDTH 900
 #define HEIGHT 600
 
+double sinceEpoch();
 void outError();
 
 // https://open.gl/drawing
@@ -56,6 +59,7 @@ int main( int argc, const char* argv[] ) {
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
 	
+	// createShaderProgram defined in shader.h
 	GLuint shaderProgram = createShaderProgram("test.vsh", "test.fsh");
 	
 	glBindFragDataLocation(shaderProgram, 0, "outColor");
@@ -68,11 +72,12 @@ int main( int argc, const char* argv[] ) {
 	glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 0, 0);
 	glEnableVertexAttribArray(posAttrib);
 	
+	// set triangle color to red
+	GLint uniColor = glGetUniformLocation(shaderProgram, "triangleColor");
+		
 	outError();
 	
-	// draw
-	glDrawArrays(GL_TRIANGLES, 0, 3);
-	SDL_GL_SwapWindow(window);
+	double start = sinceEpoch();
 	
 	bool running = true;
 	while(running){
@@ -83,12 +88,22 @@ int main( int argc, const char* argv[] ) {
 					running = false; break;
 			}
 		}
+		
+		double now = sinceEpoch();
+		double duration = (now - start);
+		
+		glUniform3f(uniColor, (sin(duration * 4.0f) + 1.0f) / 2.0f, 0.0f, 0.0f);
+		
+		// draw
+		glDrawArrays(GL_TRIANGLES, 0, 3);
+		SDL_GL_SwapWindow(window);
+		
 	}
 	
-    // Cleanup
+	// Cleanup
 	SDL_GL_DestroyContext(context);
-    SDL_DestroyWindow(window);
-    SDL_Quit();
+	SDL_DestroyWindow(window);
+	SDL_Quit();
 
 	return EXIT_SUCCESS;
 }
@@ -112,4 +127,14 @@ void outError(){
 		case GL_STACK_OVERFLOW:
 			printf("Stack underflow\n"); break;		
 	}
+}
+
+double sinceEpoch(){
+	struct timeval tv;
+	gettimeofday(&tv, NULL);
+	time_t seconds = tv.tv_sec;
+	useconds_t micros = tv.tv_usec;
+	
+	double time = seconds + micros / 1e6;
+	return time;
 }
