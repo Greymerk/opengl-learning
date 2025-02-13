@@ -1,4 +1,6 @@
+BINS = "shader.c"
+
 all: main
 
 main:
-	gcc -o game main.c -lSDL3 -lglew32 -lopengl32
+	gcc -o game main.c $(BINS) -lSDL3 -lglew32 -lopengl32

@@ -8,13 +8,15 @@
 #include <SDL3/SDL_opengl.h>
 #include <SDL3/SDL_video.h>
 
-#define COLOR_WHITE 0xffffffff
+#include "shader.h"
 
-bool isCompiled(GLuint shader);
+#define WIDTH 900
+#define HEIGHT 600
+
 void outError();
 
 // https://open.gl/drawing
-int main( int argc, char* args[] ) {
+int main( int argc, const char* argv[] ) {
 	
 	//Start SDL
 	SDL_Init(SDL_INIT_VIDEO);
@@ -26,7 +28,7 @@ int main( int argc, char* args[] ) {
 	SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
 	
 	// Create window 
-	SDL_Window* window = SDL_CreateWindow("Hello OpenGL", 900, 600, SDL_WINDOW_OPENGL);
+	SDL_Window* window = SDL_CreateWindow("Hello OpenGL", WIDTH, HEIGHT, SDL_WINDOW_OPENGL);
 	
 	// Create OpenGL Context
 	SDL_GLContext context = SDL_GL_CreateContext(window);
@@ -54,46 +56,7 @@ int main( int argc, char* args[] ) {
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
 	
-	// define vertex and fragment shader source
-	const char* vertSource = 	"#version 150 core\n"
-								"in vec2 position;\n"
-								"void main()\n"
-								"{\n"
-								"	gl_Position = vec4(position, 0.0, 1.0);\n"
-								"}\0";
-	
-	const char* fragSource = 	"#version 150 core\n"
-								"out vec4 outColor;\n"
-								"void main()\n"
-								"{\n"
-								"	outColor = vec4(1.0, 1.0, 1.0, 1.0);\n"
-								"}\0";
-
-	// create shader objects
-	GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(vertexShader, 1, &vertSource, NULL);
-	glCompileShader(vertexShader);
-	
-	GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(fragmentShader, 1, &fragSource, NULL);
-	glCompileShader(fragmentShader);
-	
-	if(isCompiled(vertexShader)){
-		printf("vertex compiled successfully\n");	
-	} else {
-		printf("vertex compiled unsuccessfully\n");	
-	}
-	
-	if(isCompiled(vertexShader)){
-		printf("fragment compiled successfully\n");	
-	} else {
-		printf("fragment compiled unsuccessfully\n");	
-	}
-	
-	// create shader program
-	GLuint shaderProgram = glCreateProgram();
-	glAttachShader(shaderProgram, vertexShader);
-	glAttachShader(shaderProgram, fragmentShader);
+	GLuint shaderProgram = createShaderProgram("test.vsh", "test.fsh");
 	
 	glBindFragDataLocation(shaderProgram, 0, "outColor");
 	
@@ -103,12 +66,13 @@ int main( int argc, char* args[] ) {
 	
 	GLint posAttrib = glGetAttribLocation(shaderProgram, "position");
 	glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 0, 0);
-	outError();
 	glEnableVertexAttribArray(posAttrib);
 	
-
+	outError();
 	
-
+	// draw
+	glDrawArrays(GL_TRIANGLES, 0, 3);
+	SDL_GL_SwapWindow(window);
 	
 	bool running = true;
 	while(running){
@@ -119,10 +83,6 @@ int main( int argc, char* args[] ) {
 					running = false; break;
 			}
 		}
-		
-		// draw
-		glDrawArrays(GL_TRIANGLES, 0, 3);
-		SDL_GL_SwapWindow(window);
 	}
 	
     // Cleanup
@@ -133,43 +93,23 @@ int main( int argc, char* args[] ) {
 	return EXIT_SUCCESS;
 }
 
-bool isCompiled(GLuint shader){
-	
-	GLint isCompiled = 0;
-	glGetShaderiv(shader, GL_COMPILE_STATUS, &isCompiled);
-	
-	if(isCompiled == GL_FALSE){
-		return false;
-	}
-	
-	return true;
-}
-
 void outError(){
 	switch(glGetError()){
 		case GL_NO_ERROR:
-			printf("No Error\n");
 			break;
 		case GL_INVALID_ENUM:
-			printf("Invalid Enum\n");
-			break;
+			printf("Invalid Enum\n"); break;
 		case GL_INVALID_VALUE:
-			printf("Invalid Value\n");
-			break;
+			printf("Invalid Value\n"); break;
 		case GL_INVALID_OPERATION:
-			printf("Invalid Operation\n");
-			break;
+			printf("Invalid Operation\n"); break;
 		case GL_INVALID_FRAMEBUFFER_OPERATION:
-			printf("Invalid Framebuffer Operation\n");
-			break;
+			printf("Invalid Framebuffer Operation\n"); break;
 		case GL_OUT_OF_MEMORY:
-			printf("Out of memory\n");
-			break;
+			printf("Out of memory\n"); break;
 		case GL_STACK_UNDERFLOW:
-			printf("Stack underflow\n");
-			break;
+			printf("Stack underflow\n"); break;
 		case GL_STACK_OVERFLOW:
-			printf("Stack underflow\n");
-			break;		
+			printf("Stack underflow\n"); break;		
 	}
 }
