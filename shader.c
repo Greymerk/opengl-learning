@@ -49,7 +49,7 @@ GLuint compileShader(const char* src, GLenum type){
 	glCompileShader(shader);
 	
 	if(!isCompiled(shader)){
-		printf("Shader compilation failed\n");	
+		printf("Shader compilation failed: %d\n", type);	
 	}
 	
 	return shader;

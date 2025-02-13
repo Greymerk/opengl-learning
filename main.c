@@ -43,9 +43,17 @@ int main( int argc, const char* argv[] ) {
 	glGenBuffers(1, &vertexBuffer);
 	
 	float vertices[] = {
-		0.0f,  0.5f, 1.0f, 0.0f, 0.0f, // Vertex 1 (X, Y) RED
-		0.5f, -0.5f, 0.0f, 1.0f, 0.0f, // Vertex 2 (X, Y) GREEN
-		-0.5f, -0.5f, 0.0f, 0.0f, 1.0f // Vertex 3 (X, Y) BLUE
+		-0.5f,  0.5f, 1.0f, 0.0f, 0.0f, // Top-left
+		0.5f,  0.5f, 0.0f, 1.0f, 0.0f, // Top-right
+		0.5f, -0.5f, 0.0f, 0.0f, 1.0f, // Bottom-right
+
+		0.5f, -0.5f, 0.0f, 0.0f, 1.0f, // Bottom-right
+		-0.5f, -0.5f, 1.0f, 1.0f, 1.0f, // Bottom-left
+		-0.5f,  0.5f, 1.0f, 0.0f, 0.0f  // Top-left
+	};
+	
+	GLuint elements[] = {
+		0, 1, 2, 3, 4, 5
 	};
 	
 	// vertex buffer object
@@ -58,6 +66,11 @@ int main( int argc, const char* argv[] ) {
 	GLuint vao;
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
+	
+	GLuint ebo;
+	glGenBuffers(1, &ebo);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(elements), elements, GL_STATIC_DRAW);
 	
 	// createShaderProgram defined in shader.h
 	GLuint shaderProgram = createShaderProgram("test.vsh", "test.fsh");
@@ -89,7 +102,7 @@ int main( int argc, const char* argv[] ) {
 		}
 		
 		// draw
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 		SDL_GL_SwapWindow(window);
 		
 	}
