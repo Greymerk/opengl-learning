@@ -10,6 +10,7 @@
 
 #include <math.h>
 #include "shader.h"
+#include "debug.h"
 
 #define WIDTH 900
 #define HEIGHT 600
@@ -36,6 +37,10 @@ int main( int argc, const char* argv[] ) {
 	
 	glewExperimental = GL_TRUE;
 	glewInit();
+
+	// enable debug output - MessageCallback from debug.h
+	glEnable(GL_DEBUG_OUTPUT);
+	glDebugMessageCallback(MessageCallback, 0);
 
 	GLuint vertexBuffer;
 	glGenBuffers(1, &vertexBuffer);
