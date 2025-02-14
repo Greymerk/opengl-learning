@@ -58,6 +58,7 @@ int main( int argc, const char* argv[] ) {
 	
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
 	
 	// vertex array object
 	GLuint vao;
@@ -118,25 +119,3 @@ int main( int argc, const char* argv[] ) {
 
 	return EXIT_SUCCESS;
 }
-
-void outError(){
-	switch(glGetError()){
-		case GL_NO_ERROR:
-			break;
-		case GL_INVALID_ENUM:
-			printf("Invalid Enum\n"); break;
-		case GL_INVALID_VALUE:
-			printf("Invalid Value\n"); break;
-		case GL_INVALID_OPERATION:
-			printf("Invalid Operation\n"); break;
-		case GL_INVALID_FRAMEBUFFER_OPERATION:
-			printf("Invalid Framebuffer Operation\n"); break;
-		case GL_OUT_OF_MEMORY:
-			printf("Out of memory\n"); break;
-		case GL_STACK_UNDERFLOW:
-			printf("Stack underflow\n"); break;
-		case GL_STACK_OVERFLOW:
-			printf("Stack underflow\n"); break;		
-	}
-}
-
